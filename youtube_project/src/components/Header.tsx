@@ -5,9 +5,11 @@ const USER_PROFILE = 'https://res.cloudinary.com/demo/image/upload/d_avatar.png/
 import Image from 'next/image';
 import { HiBars3BottomLeft, HiMiniXMark} from "react-icons/hi2";
 import { useState } from 'react';
-import Link from 'next/link';
+import { useSession, signIn, signOut } from "next-auth/react"
 
 function Header() {
+    const { data: session } = useSession();
+    console.log('Session :', session);
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => setMenuOpen(!menuOpen);
   return (
@@ -21,9 +23,15 @@ function Header() {
                 <div>
                     <button className='hidden md:block lg:block bg-black text-white w-32 h-10 rounded-lg'>Create Post</button>
                 </div>
+                {!session ?
                 <div>
-                    <button className='hidden md:block lg:block bg-white text-green-600 border-2 border-green-600 w-32 h-10 rounded-lg'>SignIn</button>
+                    <button onClick={()=>signIn('google')} className='hidden md:block lg:block bg-white text-green-600 border-2 border-green-600 w-32 h-10 rounded-lg'>SignIn</button>
                 </div>
+                :
+                <div>
+                    <button onClick={()=>signOut()} className='hidden md:block lg:block bg-white text-green-600 border-2 border-green-600 w-32 h-10 rounded-lg'>SignOut</button>
+                </div>
+                }
                 <div>
                     <Image src={USER_PROFILE} alt='profileImage' width={30} height={30} className='border-2 border-blue-600 w-10 h-10 rounded-lg'/>
                 </div>    
